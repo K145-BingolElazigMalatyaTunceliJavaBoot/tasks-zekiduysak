@@ -51,6 +51,12 @@ public class TodoService  {
         //haftalık seçim yapıldığında ise 7 gunun de verileri gelmeli
         List<TodoItem> todoItems=todoRepository.findAll();
         List<TodoItemResponseDto> dtos=new ArrayList<>();
+
+        /*
+        todoItems.forEach(s-> {
+            dtos.add(todoConverter.convertTodoItemToTodoItemResponseDto(s);
+        });
+         */
         for (TodoItem item : todoItems) {
             dtos.add(todoConverter.convertTodoItemToTodoItemResponseDto(item));
         }
