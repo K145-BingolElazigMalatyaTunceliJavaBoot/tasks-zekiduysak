@@ -29,7 +29,7 @@ public class TodoService  {
         todoRepository.save(todoItem);
     }
 
-    public List<TodoItemRequestDto> getDaily(String day) {
+    public List<TodoItemResponseDto> getDaily(String day) {
 
         List<TodoItem> daily=todoRepository.findByDay(day);
         List<TodoItemResponseDto> dtos=new ArrayList<>();

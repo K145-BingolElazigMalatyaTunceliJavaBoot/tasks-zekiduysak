@@ -32,7 +32,7 @@ public class TodoController {
     @GetMapping("/getDaily")
     public ResponseEntity<List<TodoItemRequestDto>> getDaily(@RequestParam String day) {
 
-        List<TodoItemRequestDto> daily = todoService.getDaily(day);
+        List<TodoItemResponseDto> daily = todoService.getDaily(day);
 
         return new ResponseEntity<>(daily,HttpStatus.OK);
 
