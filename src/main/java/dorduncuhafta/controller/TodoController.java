@@ -2,7 +2,8 @@ package dorduncuhafta.controller;
 
 
 
-import dorduncuhafta.dto.TodoItemDto;
+import dorduncuhafta.dto.request.TodoItemRequestDto;
+import dorduncuhafta.dto.response.TodoItemResponseDto;
 import dorduncuhafta.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,9 @@ public class TodoController {
     TodoService todoService;
 
     @PostMapping("/create")
-    public ResponseEntity<Void> save(@RequestBody TodoItemDto todoItemDto) {
+    public ResponseEntity<Void> save(@RequestBody TodoItemRequestDto todoItemRequestDto) {
 
-        todoService.save(todoItemDto);
+        todoService.save(todoItemRequestDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -29,9 +30,9 @@ public class TodoController {
 
     
     @GetMapping("/getDaily")
-    public ResponseEntity<List<TodoItemDto>> getDaily(@RequestParam String day) {
+    public ResponseEntity<List<TodoItemRequestDto>> getDaily(@RequestParam String day) {
 
-        List<TodoItemDto> daily = todoService.getDaily(day);
+        List<TodoItemRequestDto> daily = todoService.getDaily(day);
 
         return new ResponseEntity<>(daily,HttpStatus.OK);
 
@@ -39,14 +40,14 @@ public class TodoController {
 
 
     @GetMapping("/getWeekly")
-    public ResponseEntity<List<TodoItemDto>> getWeekly() {
-        List<TodoItemDto> weekly = todoService.getWeekly();
+    public ResponseEntity<List<TodoItemRequestDto>> getWeekly() {
+        List<TodoItemResponseDto> weekly = todoService.getWeekly();
         return new ResponseEntity<>(weekly,HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> updateAsCompleteOrNotComplete(@RequestBody TodoItemDto todoItemDto) {
-        todoService.updateAsCompleOrNotComplete(todoItemDto);
+    public ResponseEntity<Void> updateAsCompleteOrNotComplete(@RequestBody TodoItemRequestDto todoItemRequestDto) {
+        todoService.updateAsCompleOrNotComplete(todoItemRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }

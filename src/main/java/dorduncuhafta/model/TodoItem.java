@@ -35,8 +35,8 @@ public class TodoItem {
     @Column
     private String description;
 
-    @Column()
-    private boolean isComplete=false;
+    @Column
+    private boolean isComplete;
 
 
 

@@ -3,7 +3,8 @@ package dorduncuhafta.service;
 
 
 import dorduncuhafta.converter.TodoConverter;
-import dorduncuhafta.dto.TodoItemDto;
+import dorduncuhafta.dto.request.TodoItemRequestDto;
+import dorduncuhafta.dto.response.TodoItemResponseDto;
 import dorduncuhafta.model.TodoItem;
 import dorduncuhafta.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -21,79 +23,58 @@ public class TodoService  {
     @Autowired
     TodoConverter todoConverter;
 
+    public void save(TodoItemRequestDto todoItemRequestDto) {
 
-    public void save(TodoItemDto todoItemDto) {
-
-        TodoItem todoItem=todoConverter.convertTodoItemDtoToTodoItem(todoItemDto);
+        TodoItem todoItem=todoConverter.convertTodoItemDtoToTodoItemRequestDto(todoItemRequestDto);
         todoRepository.save(todoItem);
-
     }
 
-    public List<TodoItemDto> getDaily(String day) {
+    public List<TodoItemRequestDto> getDaily(String day) {
 
         List<TodoItem> daily=todoRepository.findByDay(day);
-        List<TodoItemDto> dto=new ArrayList<>();
+        List<TodoItemResponseDto> dtos=new ArrayList<>();
 
         /*daily.forEach(s->  {
             dto.add(s);
         }
         );
-
          */
-
         for (TodoItem item : daily ) {
-            TodoItemDto dto1=new TodoItemDto();
-            dto1.setComplete(item.isComplete());
-            dto1.setDay(item.getDay());
-            dto1.setStart(item.getStart());
-            dto1.setEnd(item.getEnd());
-            dto.add(dto1);
+
+            dtos.add(todoConverter.convertTodoItemToTodoItemResponseDto(item));
         }
-
-
-        return dto;
+        return dtos;
     }
 
-    public List<TodoItemDto> getWeekly() {
-
-
+    public List<TodoItemResponseDto> getWeekly() {
         //kullanıcı bir hafta için yapacaklarını bir listede tutmak istiyor
         //haftalık seçim yapıldığında ise 7 gunun de verileri gelmeli
         List<TodoItem> todoItems=todoRepository.findAll();
-        List<TodoItemDto> dtos=new ArrayList<>();
-
+        List<TodoItemResponseDto> dtos=new ArrayList<>();
         for (TodoItem item : todoItems) {
-            TodoItemDto dto=new TodoItemDto();
-            dto.setDescription(item.getDescription());
-            dto.setStart(item.getStart());
-            dto.setEnd(item.getEnd());
-            dto.setComplete(item.isComplete());
-            dtos.add(dto);
+            dtos.add(todoConverter.convertTodoItemToTodoItemResponseDto(item));
         }
-
         return dtos;
-
     }
 
     public void delete(String day,int start,int end,boolean isComplete) {
-
-        TodoItem item=new TodoItem();
-        item.setComplete(isComplete);
-        item.setDay(day);
-        item.setStart(start);
-        item.setEnd(end);
-        todoRepository.delete(item);
-
-
+        TodoItem item=todoRepository.findByFirstByDAyIgnoreCaseAndStartNotNullAndEndNotNullAndDescriptionNotNullAndIsCompleteNotNull(day);
+        if (Objects.isNull(item)) {
+            throw new RuntimeException("hata");
+        }
+        todoRepository.deleteById(item.getId());
     }
 
+    public void updateAsCompleOrNotComplete(TodoItemRequestDto todoItemRequestDto) {
+       TodoItem item=todoRepository.findByFirstByDAyIgnoreCaseAndStartNotNullAndEndNotNullAndDescriptionNotNullAndIsCompleteNotNull(todoItemRequestDto.getDay());
+        if (Objects.isNull(item)) {
+           throw new RuntimeException("hata");
+        }
+        item.setStart(todoItemRequestDto.getStart());
+        item.setEnd(todoItemRequestDto.getEnd());
+        item.setComplete(todoItemRequestDto.isComplete());
+        item.setDescription(todoItemRequestDto.getDescription());
 
-    public void updateAsCompleOrNotComplete(TodoItemDto todoItemDto) {
-        TodoItem item=new TodoItem();
-        item.setStart(todoItemDto.getStart());
-        item.setEnd(todoItemDto.getEnd());
-        item.setComplete(todoItemDto.isComplete());
-        item.setDescription(todoItemDto.getDescription());
         todoRepository.saveAndFlush(item);
     }
 
