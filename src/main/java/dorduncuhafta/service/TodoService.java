@@ -66,9 +66,9 @@ public class TodoService  {
     }
 
     public void delete(long id) {
-        ;
+
         if (todoRepository.findById(id).isEmpty()) {
-            throw new RuntimeException("hata");
+            throw new UndefinedException("hata");
         }
         /*
         Optional<TodoItem> temp=todoRepository.findById(id);
