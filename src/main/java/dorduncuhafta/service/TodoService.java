@@ -5,14 +5,17 @@ package dorduncuhafta.service;
 import dorduncuhafta.converter.TodoConverter;
 import dorduncuhafta.dto.request.TodoItemRequestDto;
 import dorduncuhafta.dto.response.TodoItemResponseDto;
+import dorduncuhafta.exception.UndefinedException;
 import dorduncuhafta.model.TodoItem;
 import dorduncuhafta.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -25,32 +28,31 @@ public class TodoService  {
 
     public void save(TodoItemRequestDto todoItemRequestDto) {
 
-        TodoItem todoItem=todoConverter.convertTodoItemDtoToTodoItemRequestDto(todoItemRequestDto);
+        TodoItem todoItem=todoConverter.convertTodoItemRequestDtoToTodoItem(todoItemRequestDto);
         todoRepository.save(todoItem);
     }
 
-    public List<TodoItemResponseDto> getDaily(String day) {
+    public List<TodoItemRequestDto> getDaily(String day) {
 
         List<TodoItem> daily=todoRepository.findByDay(day);
-        List<TodoItemResponseDto> dtos=new ArrayList<>();
+        List<TodoItemRequestDto> dtos=new ArrayList<>();
 
         /*daily.forEach(s->  {
-            dto.add(s);
+            dto.add(todoConverter.convertTodoItemToTodoItemRequestDto(s));
         }
         );
          */
         for (TodoItem item : daily ) {
-
-            dtos.add(todoConverter.convertTodoItemToTodoItemResponseDto(item));
+            dtos.add(todoConverter.convertTodoItemToTodoItemRequestDto(item));
         }
         return dtos;
     }
 
-    public List<TodoItemResponseDto> getWeekly() {
+    public List<TodoItemRequestDto> getWeekly() {
         //kullanıcı bir hafta için yapacaklarını bir listede tutmak istiyor
         //haftalık seçim yapıldığında ise 7 gunun de verileri gelmeli
         List<TodoItem> todoItems=todoRepository.findAll();
-        List<TodoItemResponseDto> dtos=new ArrayList<>();
+        List<TodoItemRequestDto> dtos=new ArrayList<>();
 
         /*
         todoItems.forEach(s-> {
@@ -58,16 +60,25 @@ public class TodoService  {
         });
          */
         for (TodoItem item : todoItems) {
-            dtos.add(todoConverter.convertTodoItemToTodoItemResponseDto(item));
+            dtos.add(todoConverter.convertTodoItemToTodoItemRequestDto(item));
         }
         return dtos;
     }
 
-    public void delete(String day,int start,int end,boolean isComplete) {
-        TodoItem item=todoRepository.findByFirstByDAyIgnoreCaseAndStartNotNullAndEndNotNullAndDescriptionNotNullAndIsCompleteNotNull(day);
-        if (Objects.isNull(item)) {
+    public void delete(long id) {
+        ;
+        if (todoRepository.findById(id).isEmpty()) {
             throw new RuntimeException("hata");
         }
+        /*
+        Optional<TodoItem> temp=todoRepository.findById(id);
+        if (temp.isEmpty()) {
+            throw new UndefinedException("hata olustu");
+        }
+        todoRepository.deleteById(temp.get().getId());
+        */
+
+        TodoItem item=todoRepository.findById(id).orElseThrow(()->{ throw new UndefinedException("hata olustu");});
         todoRepository.deleteById(item.getId());
     }
 

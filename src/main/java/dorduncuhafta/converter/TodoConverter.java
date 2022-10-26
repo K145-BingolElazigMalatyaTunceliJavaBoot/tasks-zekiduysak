@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TodoConverter {
-    public TodoItem convertTodoItemDtoToTodoItemRequestDto (TodoItemRequestDto item) {
+
+
+    public TodoItem convertTodoItemRequestDtoToTodoItem (TodoItemRequestDto item) {
         TodoItem todoItem = new TodoItem();
         todoItem.setDescription(item.getDescription());
         todoItem.setDay(item.getDay());
@@ -16,17 +18,16 @@ public class TodoConverter {
         todoItem.setComplete(item.isComplete());
         return todoItem;
     }
+    public TodoItemRequestDto convertTodoItemToTodoItemRequestDto(TodoItem item) {
+        TodoItemRequestDto dto=new TodoItemRequestDto();
+        dto.setComplete(item.isComplete());
+        dto.setDescription(item.getDescription());
+        dto.setStart(item.getStart());
+        dto.setEnd(item.getEnd());
+        dto.setDay(item.getDay());
+        return dto;
+    }
 
 
-
-        public TodoItemResponseDto convertTodoItemToTodoItemResponseDto(TodoItem item) {
-            TodoItemResponseDto dto=new TodoItemResponseDto();
-            dto.setComplete(item.isComplete());
-            dto.setDescription(item.getDescription());
-            dto.setStart(item.getStart());
-            dto.setEnd(item.getEnd());
-            dto.setDay(item.getDay());
-            return dto;
-        }
 
 }
