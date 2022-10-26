@@ -3,6 +3,7 @@ package dorduncuhafta.service;
 
 
 import dorduncuhafta.converter.TodoConverter;
+import dorduncuhafta.dto.request.TodoItemAsCompleteNotCompleteDto;
 import dorduncuhafta.dto.request.TodoItemRequestDto;
 import dorduncuhafta.dto.response.TodoItemResponseDto;
 import dorduncuhafta.exception.UndefinedException;
@@ -82,17 +83,13 @@ public class TodoService  {
         todoRepository.deleteById(item.getId());
     }
 
-    public void updateAsCompleOrNotComplete(TodoItemRequestDto todoItemRequestDto) {
-       TodoItem item=todoRepository.findByFirstByDAyIgnoreCaseAndStartNotNullAndEndNotNullAndDescriptionNotNullAndIsCompleteNotNull(todoItemRequestDto.getDay());
-        if (Objects.isNull(item)) {
-           throw new RuntimeException("hata");
-        }
-        item.setStart(todoItemRequestDto.getStart());
-        item.setEnd(todoItemRequestDto.getEnd());
-        item.setComplete(todoItemRequestDto.isComplete());
-        item.setDescription(todoItemRequestDto.getDescription());
+    public void updateAsCompleOrNotComplete(TodoItemAsCompleteNotCompleteDto todoItemAsCompleteNotCompleteDto) {
+        TodoItem item=todoRepository.findById(todoItemAsCompleteNotCompleteDto.getId()).orElseThrow(() -> {
+            throw new UndefinedException("hata olustu")
+        });
+        item.setComplete(todoItemAsCompleteNotCompleteDto.isComplete());
 
-        todoRepository.saveAndFlush(item);
+        todoRepository.saveAndFlush();
     }
 
 

@@ -2,6 +2,7 @@ package dorduncuhafta.controller;
 
 
 
+import dorduncuhafta.dto.request.TodoItemAsCompleteNotCompleteDto;
 import dorduncuhafta.dto.request.TodoItemRequestDto;
 
 import dorduncuhafta.service.TodoService;
@@ -49,9 +50,9 @@ public class TodoController {
     }
 
     @ApiOperation(value = "yapılacak bir işi yapıldı/tamamlandı ya da yapılmadı/tamamlanmadı şeklinde değiştirir")
-    @PutMapping("/update")
-    public ResponseEntity<Void> updateAsCompleteOrNotComplete(@RequestBody TodoItemRequestDto todoItemRequestDto) {
-        todoService.updateAsCompleOrNotComplete(todoItemRequestDto);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Void> updateAsCompleteOrNotComplete(@RequestBody TodoItemAsCompleteNotCompleteDto  todoItemAsCompleteNotCompleteDto) {
+        todoService.updateAsCompleOrNotComplete(todoItemAsCompleteNotCompleteDto);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
