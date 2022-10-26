@@ -50,7 +50,7 @@ public class TodoController {
     }
 
     @ApiOperation(value = "yapılacak bir işi yapıldı/tamamlandı ya da yapılmadı/tamamlanmadı şeklinde değiştirir")
-    @PutMapping("/update/{id}")
+    @PutMapping("/update/")
     public ResponseEntity<Void> updateAsCompleteOrNotComplete(@RequestBody TodoItemAsCompleteNotCompleteDto  todoItemAsCompleteNotCompleteDto) {
         todoService.updateAsCompleOrNotComplete(todoItemAsCompleteNotCompleteDto);
         return new ResponseEntity<>(HttpStatus.OK);
