@@ -46,7 +46,7 @@ public class TodoService  {
         for (TodoItem item : daily ) {
             dtos.add(todoConverter.convertTodoItemToTodoItemRequestDto(item));
         }
-        return dtos;
+        return  dtos;
     }
 
     public List<TodoItemRequestDto> getWeekly() {
